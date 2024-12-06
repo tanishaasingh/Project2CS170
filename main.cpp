@@ -120,7 +120,10 @@ void readDataset(const string& filename, vector<vector<double>>& data, vector<in
 
 int main(int argc, char* argv[]) {
     srand(static_cast<unsigned>(time(0))); // Seed for random number generation
+    srand(static_cast<unsigned>(time(0))); // Seed for random number generation
 
+    int userFeatures;
+    int userAlgChoice;
     int userFeatures;
     int userAlgChoice;
 
@@ -165,4 +168,6 @@ int main(int argc, char* argv[]) {
     cout << "Leave-One-Out validation accuracy with features {3, 5, 7}: " << accuracy * 100 << "%" << endl;
 
     return 0;
+    return 0;
 }
+
