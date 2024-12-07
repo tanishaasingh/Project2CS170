@@ -1,47 +1,45 @@
 #include "Validator.h"
 #include <iostream>
+using namespace std;
 
-Validator::Validator(const std::vector<std::vector<double>>& data, const std::vector<int>& labels) 
-    : dataset(data), labels(labels) {}
+ModelValidator::ModelValidator(std::vector<std::vector<double>> inputData, std::vector<int> inputLabels)
+    : data(inputData), labels(inputLabels) {}
 
-double Validator::leaveOneOutValidation(const std::set<int>& featureSubset) {
+double ModelValidator::performLeaveOneOutValidation(std::set<int> selectedFeatures) {
     int correctPredictions = 0;
-    size_t totalInstances = dataset.size();
+    size_t numSamples = data.size();
 
     // Leave-one-out cross-validation
-    for (size_t i = 0; i < totalInstances; ++i) {
-        std::vector<std::vector<double>> trainingData;
-        std::vector<int> trainingLabels;
+    for (size_t i = 0; i < numSamples; ++i) {
+        std::vector<std::vector<double>> trainData;
+        std::vector<int> trainLabels;
 
-        // Prepare the training set by excluding the i-th instance
-        for (size_t j = 0; j < totalInstances; ++j) {
+        // Prepare the training set by excluding the i-th sample
+        for (size_t j = 0; j < numSamples; ++j) {
             if (j != i) {
-                trainingData.push_back(getFeaturesForInstance(j, featureSubset));
-                trainingLabels.push_back(labels[j]);
+                trainData.push_back(extractFeaturesForSample(j, selectedFeatures));
+                trainLabels.push_back(labels[j]);
             }
         }
 
-        NN nn;
-        nn.train(trainingData, trainingLabels);
+        NN neuralNetwork;
+        neuralNetwork.set(trainData, trainLabels);
 
-        // Test the model with the i-th instance
-        std::vector<double> testInstance = getFeaturesForInstance(i, featureSubset);
-        int predictedClass = nn.test(testInstance);
+        std::vector<double> testSample = extractFeaturesForSample(i, selectedFeatures);
+        int predictedClass = neuralNetwork.SETtest(testSample);
 
-        // Check if the prediction is correct
         if (predictedClass == labels[i]) {
             ++correctPredictions;
         }
     }
 
-    // Calculate accuracy
-    return static_cast<double>(correctPredictions) / totalInstances;
+    return static_cast<double>(correctPredictions) / numSamples;
 }
 
-std::vector<double> Validator::getFeaturesForInstance(int instanceIdx, const std::set<int>& featureSubset) {
-    std::vector<double> selectedFeatures;
-    for (int feature : featureSubset) {
-        selectedFeatures.push_back(dataset[instanceIdx][feature - 1]); // feature index is 1-based
+std::vector<double> ModelValidator::extractFeaturesForSample(int sampleIdx, std::set<int> selectedFeatures) {
+    std::vector<double> selectedData;
+    for (int feature : selectedFeatures) {
+        selectedData.push_back(data[sampleIdx][feature - 1]);
     }
-    return selectedFeatures;
+    return selectedData;
 }

@@ -100,6 +100,7 @@ void backwardElimination(int numFeatures) {
 
 
 void readDataset(const string& filename, vector<vector<double>>& data, vector<int>& labels) {
+
     ifstream file(filename);
     string line;
     while (getline(file, line)) {
@@ -120,12 +121,11 @@ void readDataset(const string& filename, vector<vector<double>>& data, vector<in
 
 int main(int argc, char* argv[]) {
     srand(static_cast<unsigned>(time(0))); // Seed for random number generation
-    srand(static_cast<unsigned>(time(0))); // Seed for random number generation
+    
 
     int userFeatures;
     int userAlgChoice;
-    int userFeatures;
-    int userAlgChoice;
+    
 
     cout << "Welcome to Tanishaa, Daniel, and Arjun's Feature Selection Algorithm.\n";
     cout << "Please enter the total number of features: ";
@@ -134,8 +134,9 @@ int main(int argc, char* argv[]) {
     vector<vector<double>> data;
     vector<int> labels;
 
-    // Reading dataset (small-test-dataset.txt or large-test-dataset.txt)
+    
     cout << "\n Please enter the dataset filename (e.g., small-test-dataset.txt): \n";
+
     string filename;
     cin >> filename;
     readDataset(filename, data, labels);
@@ -161,11 +162,15 @@ int main(int argc, char* argv[]) {
 
     cout << "NOW Checking the datasets:\n ";
 
-    // Run Leave-One-Out Validation (LOO-CV)
-    set<int> featureSubset = {1, 15, 27}; // Example feature subset
-    Validator validator(data, labels);
-    double accuracy = validator.leaveOneOutValidation(featureSubset);
-    cout << "Leave-One-Out validation accuracy with features {3, 5, 7}: " << accuracy * 100 << "%" << endl;
+    
+    set<int> SUBSET = {3, 5, 7}; 
+
+
+    ModelValidator ModelValidator(data, labels);
+
+    double A = ModelValidator.performLeaveOneOutValidation(SUBSET);
+
+    cout << "Leave-One-Out validation accuracy with features {3, 5, 7}: " << A * 100 << "%" << endl;
 
     return 0;
     return 0;

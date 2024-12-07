@@ -3,33 +3,45 @@
 #include <limits>
 #include <iostream>
 
+using namespace std;
+
 NN::NN() {}
 
-void NN::train(const std::vector<std::vector<double>>& data, const std::vector<int>& labels) {
-    trainingData = data;
-    trainingLabels = labels;
+void NN::set(vector<std::vector<double>>& d, vector<int>& l) {
+
+    setdata = d;
+    label = l;
+
 }
 
-int NN::test(const std::vector<double>& instance) {
-    double minDistance = std::numeric_limits<double>::max();
-    int predictedClass = -1;
+int NN::SETtest(vector<double>& instance) {
 
-    // Loop over all training instances to find the nearest neighbor
-    for (size_t i = 0; i < trainingData.size(); ++i) {
-        double dist = euclideanDistance(instance, trainingData[i]);
-        if (dist < minDistance) {
-            minDistance = dist;
-            predictedClass = trainingLabels[i];
+    double MIN = numeric_limits<double>::max();
+    int p = -1;
+
+   
+    for (size_t i = 0; i < setdata.size(); ++i) {
+        double dist = euclideanDistance(instance, setdata[i]);
+
+        if (dist < MIN) {
+
+
+            MIN = dist;
+            p = label[i];
+
         }
     }
 
-    return predictedClass;
+    return p;
 }
 
-double NN::euclideanDistance(const std::vector<double>& a, const std::vector<double>& b) {
-    double sum = 0;
-    for (size_t i = 0; i < a.size(); ++i) {
-        sum += (a[i] - b[i]) * (a[i] - b[i]);
+double NN::euclideanDistance(vector<double>& a, vector<double>& b) {
+
+    double total = 0;
+    for (size_t i = 0; i < a.size(); i++) {
+
+        total =  total + (a[i] - b[i]) * (a[i] - b[i]);
+
     }
-    return std::sqrt(sum);
+    return sqrt(total);
 }

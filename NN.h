@@ -4,17 +4,22 @@
 #include <vector>
 #include <cmath>
 
+using namespace std;
+
 class NN {
+
 public:
-    NN(); // Constructor to initialize the classifier
-    void train(const std::vector<std::vector<double>>& data, const std::vector<int>& labels);
-    int test(const std::vector<double>& instance);
+    NN(); 
+
+    void set( vector<std::vector<double>>& d, vector<int>& l );
+    int SETtest( vector<double>& instance);
     
 private:
-    std::vector<std::vector<double>> trainingData;
-    std::vector<int> trainingLabels;
+    vector<vector<double>> setdata;
+    vector<int> label;
     
-    double euclideanDistance(const std::vector<double>& a, const std::vector<double>& b);
+    double euclideanDistance( vector<double>& a, vector<double>& b );
+
 };
 
 #endif // NN_H

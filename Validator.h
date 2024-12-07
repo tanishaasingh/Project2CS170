@@ -5,16 +5,21 @@
 #include <set>
 #include "NN.h"
 
-class Validator {
+class ModelValidator {
 public:
-    Validator(const std::vector<std::vector<double>>& data, const std::vector<int>& labels);
-    double leaveOneOutValidation(const std::set<int>& featureSubset);
+    ModelValidator(vector<vector<double>> inputData, vector<int> inputLabels);
+
+    double performLeaveOneOutValidation(set<int> selectedFeatures);
+
 
 private:
-    std::vector<std::vector<double>> dataset;
-    std::vector<int> labels;
 
-    std::vector<double> getFeaturesForInstance(int instanceIdx, const std::set<int>& featureSubset);
+    vector<vector<double>> data;
+    vector<int> labels;
+    
+     std::vector<double> extractFeaturesForSample(int sampleIdx, std::set<int> selectedFeatures);
+
 };
 
 #endif // VALIDATOR_H
+
