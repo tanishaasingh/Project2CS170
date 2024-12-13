@@ -56,7 +56,9 @@ void forwardSelection(int numFeatures) {
             bestSubset = currentSet;
             cout << "Feature " << bestFeature << " added to the current set.\n";
         } else {
-            break; // No improvement; terminate early
+
+
+            break; 
         }
     }
 
@@ -102,7 +104,7 @@ void backwardElimination(int numFeatures) {
             bestSubset = currentSet;
             cout << "Feature " << worstFeature << " removed from the current set.\n";
         } else {
-            break; // No improvement; terminate early
+            break; //   TERMINATE
         }
     }
 
@@ -132,7 +134,7 @@ void readDataset(const string& filename, vector<vector<double>>& data, vector<in
 }
 
 int main(int argc, char* argv[]) {
-    srand(static_cast<unsigned>(time(0))); // Seed for random number generation
+    srand(static_cast<unsigned>(time(0))); 
 
     int userFeatures;
     int userAlgChoice;
@@ -189,7 +191,7 @@ int main(int argc, char* argv[]) {
 
     cout << "Leave-One-Out validation accuracy with features {3, 5, 7}: " << A * 100 << "%" << endl;
     cout << " Leave-One-Out validation accuracy with features {1, 15, 27}: " << B * 100 << "%" << endl;
-    cout << " (Titanic) Leave-One-Out validation accuracy with features {3998, 4000, 4001}: " << B * 100 << "%" << endl;
+    cout << " (Titanic) Leave-One-Out validation accuracy with features {3998, 4000, 4001}: " << C * 100 << "%" << endl;
  
     return 0;
 }
