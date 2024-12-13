@@ -184,7 +184,7 @@ int main(int argc, char* argv[]) {
     
     set<int> SUBSET = {3, 5, 7}; 
     set<int> SUBSET2 = {1, 15, 27}; 
-    set<int> SUBSET3 = {1, 5, 15}; 
+    set<int> SUBSET3 = {0, 0, 0}; 
 
 
     ModelValidator ModelValidator(data, labels);
