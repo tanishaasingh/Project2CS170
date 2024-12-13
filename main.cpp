@@ -1,33 +1,39 @@
+#include "NN.h"
+#include "Validator.h"
 #include <iostream>
 #include <vector>
-#include <cstdlib>
-#include <ctime>
 #include <set>
 #include <fstream>
 #include <sstream>
 #include <cmath>
 #include <limits>
-#include "NN.h"
-#include "Validator.h"
-
 
 using namespace std;
 
-// Stub evaluation function that returns a random value
+ModelValidator* validator = nullptr; // Global pointer to access ModelValidator instance
+
+// Real evaluation function using leave-one-out validation
 double evaluateSubset(const set<int>& subset) {
-    return static_cast<double>(rand()) / RAND_MAX; // Random value between 0 and 1
+    if (validator == nullptr) {
+        cerr << "Error: ModelValidator is not initialized!" << endl;
+        return 0.0;
+    }
+    return validator->performLeaveOneOutValidation(subset);
 }
 
 // Forward Selection
 void forwardSelection(int numFeatures) {
-    set<int> currentSet; // Start with an empty set
+    set<int> currentSet; 
     double bestScore = -1.0;
+    set<int> bestSubset;
+
     cout << "Starting Forward Selection...\n";
 
     for (int i = 1; i <= numFeatures; ++i) {
         int bestFeature = -1;
+        double iterationBestScore = -1.0;
 
-        // Evaluate adding each unused feature
+        
         for (int feature = 1; feature <= numFeatures; ++feature) {
             if (currentSet.find(feature) == currentSet.end()) {
                 set<int> tempSet = currentSet;
@@ -36,11 +42,10 @@ void forwardSelection(int numFeatures) {
                 double score = evaluateSubset(tempSet);
                 cout << "Evaluating subset { ";
                 for (int f : tempSet) cout << f << " ";
-                score = score * 100.0;
-                cout << "} => Score: " << score << "%" << endl;
+                cout << "} => Score: " << score * 100.0 << "%" << endl;
 
-                if (score > bestScore) {
-                    bestScore = score;
+                if (score > iterationBestScore) {
+                    iterationBestScore = score;
                     bestFeature = feature;
                 }
             }
@@ -48,28 +53,38 @@ void forwardSelection(int numFeatures) {
 
         if (bestFeature != -1) {
             currentSet.insert(bestFeature);
+            if (iterationBestScore > bestScore) {
+                bestScore = iterationBestScore;
+                bestSubset = currentSet;
+            }
             cout << "Feature " << bestFeature << " added to the current set.\n";
+        } else {
+            
+            break;
         }
     }
 
     cout << "Finished Forward Selection.\nBest feature subset: { ";
-    for (int f : currentSet) cout << f << " ";
-    cout << "}" << ": accuracy is " << bestScore << "%\n";
+    for (int f : bestSubset) cout << f << " ";
+    cout << "}: accuracy is " << bestScore * 100.0 << "%\n";
 }
+
 
 // Backward Elimination
 void backwardElimination(int numFeatures) {
     set<int> currentSet;
     double bestScore = -1.0;
+    set<int> bestSubset;
 
-    for (int i = 1; i <= numFeatures; ++i) currentSet.insert(i); // Start with all features
+    for (int i = 1; i <= numFeatures; ++i) currentSet.insert(i);
 
     cout << "Starting Backward Elimination...\n";
 
     while (currentSet.size() > 1) {
         int worstFeature = -1;
+        double iterationBestScore = -1.0;
 
-        // Evaluate removing each feature
+      
         for (int feature : currentSet) {
             set<int> tempSet = currentSet;
             tempSet.erase(feature);
@@ -77,30 +92,34 @@ void backwardElimination(int numFeatures) {
             double score = evaluateSubset(tempSet);
             cout << "Evaluating subset { ";
             for (int f : tempSet) cout << f << " ";
-            score = score * 100.0;
-            cout << "} => Score: " << score << "%" << endl;
+            cout << "} => Score: " << score * 100.0 << "%" << endl;
 
-            if (score > bestScore) {
-                bestScore = score;
+            if (score > iterationBestScore) {
+                iterationBestScore = score;
                 worstFeature = feature;
             }
         }
 
         if (worstFeature != -1) {
             currentSet.erase(worstFeature);
+            if (iterationBestScore > bestScore) {
+                bestScore = iterationBestScore;
+                bestSubset = currentSet;
+            }
             cout << "Feature " << worstFeature << " removed from the current set.\n";
+        } else {
+            
+            break;
         }
     }
 
-    bestScore = bestScore * 100.0;
     cout << "Finished Backward Elimination.\nBest feature subset: { ";
-    for (int f : currentSet) cout << f << " ";
-    cout << "}" << ": accuracy is " << bestScore << "%\n";
+    for (int f : bestSubset) cout << f << " ";
+    cout << "}: accuracy is " << bestScore * 100.0 << "%\n";
 }
 
 
 void readDataset(const string& filename, vector<vector<double>>& data, vector<int>& labels) {
-
     ifstream file(filename);
     string line;
     while (getline(file, line)) {
@@ -118,14 +137,11 @@ void readDataset(const string& filename, vector<vector<double>>& data, vector<in
     }
 }
 
-
 int main(int argc, char* argv[]) {
     srand(static_cast<unsigned>(time(0))); // Seed for random number generation
-    
 
     int userFeatures;
     int userAlgChoice;
-    
 
     cout << "Welcome to Tanishaa, Daniel, and Arjun's Feature Selection Algorithm.\n";
     cout << "Please enter the total number of features: ";
@@ -134,13 +150,50 @@ int main(int argc, char* argv[]) {
     vector<vector<double>> data;
     vector<int> labels;
 
+
     
+    //TITANIC DATASET IMPLEMENTATION
+    cout << "USING Titanic dataset...\n";
+
+
+    string filename = "titanicclean.txt"; 
+
+    readDataset(filename, data, labels);
+
+    userFeatures = data[0].size();
+
+   
+    ModelValidator modelValidator(data, labels);
+    validator = &modelValidator;
+
+    cout << "Type the number of the algorithm you want to run.\n";
+    cout << "   1. Forward Selection\n";
+    cout << "   2. Backward Elimination\n";
+    cin >> userAlgChoice;
+
+    if (userAlgChoice == 1) {
+        forwardSelection(userFeatures);
+    } else if (userAlgChoice == 2) {
+        backwardElimination(userFeatures);
+    } else {
+        cout << "Invalid choice. Please RESTART.\n";
+    }
+
+    
+    
+    
+    
+    
+    /*
     cout << "\n Please enter the dataset filename (e.g., small-test-dataset.txt): \n";
 
     string filename;
     cin >> filename;
     readDataset(filename, data, labels);
-    
+
+    // Initialize ModelValidator with the dataset
+    ModelValidator modelValidator(data, labels);
+    validator = &modelValidator;
 
     cout << "Type the number of the algorithm you want to run.\n";
     cout << "   1. Forward Selection\n";
@@ -164,15 +217,15 @@ int main(int argc, char* argv[]) {
 
     
     set<int> SUBSET = {3, 5, 7}; 
-
+    set<int> SUBSET2 = {1, 15, 27}; 
 
     ModelValidator ModelValidator(data, labels);
 
     double A = ModelValidator.performLeaveOneOutValidation(SUBSET);
+    double B = ModelValidator.performLeaveOneOutValidation(SUBSET2);
 
     cout << "Leave-One-Out validation accuracy with features {3, 5, 7}: " << A * 100 << "%" << endl;
-
-    return 0;
+    cout << "Leave-One-Out validation accuracy with features {1, 15, 27}: " << B * 100 << "%" << endl;
+ */
     return 0;
 }
-
