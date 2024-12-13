@@ -154,7 +154,7 @@ int main(int argc, char* argv[]) {
     cout << "\n Please enter the dataset filename (e.g., small-test-dataset.txt): \n";
 
     string filename;
-    string filename2 = "small-test-dataset.txt";
+    string filename2 = "large-test-dataset.txt";
     cin >> filename;
 
     //readDataset(filename, data, labels);
@@ -201,3 +201,14 @@ int main(int argc, char* argv[]) {
  
     return 0;
 }
+
+
+/*Group 5 Section 1: Tanishaa Singh tsing038 , Daniel Villicana, Arjun Khanna 
+
+
+- Small Dataset Results:
+- Forward: Feature Subset: <1>, Acc: 75
+- Backward: Feature Subset: <1 3 4 5 6>, Acc: 87
+- Large Dataset Results:
+- Forward: Feature Subset: <1 2 3>, Acc: 75.9
+- Backward: Feature Subset: <1 2 3>, Acc: 75 */
