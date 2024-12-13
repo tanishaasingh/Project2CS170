@@ -154,9 +154,11 @@ int main(int argc, char* argv[]) {
     cout << "\n Please enter the dataset filename (e.g., small-test-dataset.txt): \n";
 
     string filename;
+    string filename2 = "small-test-dataset.txt";
     cin >> filename;
-    readDataset(filename, data, labels);
 
+    //readDataset(filename, data, labels);
+    readDataset(filename2, data, labels);
     // Initialize ModelValidator with the dataset
     ModelValidator modelValidator(data, labels);
     validator = &modelValidator;
