@@ -10,9 +10,11 @@
 
 using namespace std;
 
-ModelValidator* validator = nullptr; // Global pointer to access ModelValidator instance
+ModelValidator* validator = nullptr; 
 
-// Real evaluation function using leave-one-out validation
+
+
+
 double evaluateSubset(const set<int>& subset) {
     if (validator == nullptr) {
         cerr << "Error: ModelValidator is not initialized!" << endl;
@@ -20,6 +22,8 @@ double evaluateSubset(const set<int>& subset) {
     }
     return validator->performLeaveOneOutValidation(subset);
 }
+
+
 
 // Forward Selection
 void forwardSelection(int numFeatures) {
