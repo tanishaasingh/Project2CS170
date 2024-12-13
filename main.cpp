@@ -184,7 +184,7 @@ int main(int argc, char* argv[]) {
     
     set<int> SUBSET = {3, 5, 7}; 
     set<int> SUBSET2 = {1, 15, 27}; 
-    set<int> SUBSET3 = {3998,4000, 4001}; 
+    set<int> SUBSET3 = {1, 5, 15}; 
 
 
     ModelValidator ModelValidator(data, labels);
@@ -195,7 +195,7 @@ int main(int argc, char* argv[]) {
 
     cout << "Leave-One-Out validation accuracy with features {3, 5, 7}: " << A * 100 << "%" << endl;
     cout << " Leave-One-Out validation accuracy with features {1, 15, 27}: " << B * 100 << "%" << endl;
-    cout << " (Titanic) Leave-One-Out validation accuracy with features {3998, 4000, 4001}: " << C * 100 << "%" << endl;
+    cout << " (Titanic) Leave-One-Out validation accuracy with features {1, 5, 15}: " << C * 100 << "%" << endl;
  
     return 0;
 }
